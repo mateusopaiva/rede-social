@@ -1,12 +1,6 @@
 import ReactDOM from 'react-dom'
 
-function Subtitle() {
-    return <h2>Componente Subtítulo</h2>;
-}
-
-function App() {
-    return <Subtitle />;
-}
+import App from './App';
 
 ReactDOM.render(
     <App />,

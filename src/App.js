@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import './styles/App.css';
 import './styles/PostForm.css';
 import './styles/Feed.css';
@@ -8,18 +10,32 @@ import clockIcon from './images/clock.svg';
 import emptyFolderIcon from './images/empty-folder.svg';
 
 export default function App() {
-const posts = [
-        {
-            id: Math.random(),
-            content: 'O React é uma biblioteca criada pelo Facebook para criar elementos de interface que podem ser compartilhados e reutilizados em uma aplicação de forma rápida, simples e intuitiva.',
-            userName: 'Staart',
-            publishedAt: new Date(), 
-        },
-    ];
+    const [posts, setPosts] = useState([
+            {
+                id: Math.random(),
+                content: 'O React é uma biblioteca criada pelo Facebook para criar elementos de interface que podem ser compartilhados e reutilizados em uma aplicação de forma rápida, simples e intuitiva.',
+                userName: 'Staart',
+                publishedAt: new Date(), 
+            },
+        ]);
+
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        setPosts([
+            ...posts,
+            {
+                id: Math.random(),
+                content: `Conteudo ${Math.random()}`,
+                userName: 'Staart',
+                publishedAt: new Date(), 
+            },
+        ]);
+    }
 
 return (
         <div className="wrapper">
-            <form className="post-form" onSubmit={() => alert('Formulario submetido')}>
+            <form className="post-form" onSubmit={handleSubmit}>
                 <input placeholder="Escreva uma nova história..."/>
                 <div>
                     <img src={userIcon} alt="User"/>

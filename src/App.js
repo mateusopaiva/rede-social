@@ -10,14 +10,9 @@ import clockIcon from './images/clock.svg';
 import emptyFolderIcon from './images/empty-folder.svg';
 
 export default function App() {
-    const [posts, setPosts] = useState([
-            {
-                id: Math.random(),
-                content: 'O React é uma biblioteca criada pelo Facebook para criar elementos de interface que podem ser compartilhados e reutilizados em uma aplicação de forma rápida, simples e intuitiva.',
-                userName: 'Staart',
-                publishedAt: new Date(), 
-            },
-        ]);
+    const [history, setHistory] = useState('');
+    const [userName, setUsername] = useState('');
+    const [posts, setPosts] = useState([]);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -26,20 +21,23 @@ export default function App() {
             ...posts,
             {
                 id: Math.random(),
-                content: `Conteudo ${Math.random()}`,
-                userName: 'Staart',
+                content: history,
+                userName,
                 publishedAt: new Date(), 
             },
         ]);
+
+        setHistory('');
+        setUsername('');
     }
 
 return (
         <div className="wrapper">
             <form className="post-form" onSubmit={handleSubmit}>
-                <input placeholder="Escreva uma nova história..."/>
+                <input value={history} placeholder="Escreva uma nova história..." onChange={(event) => setHistory(event.target.value)}/>
                 <div>
                     <img src={userIcon} alt="User"/>
-                    <input placeholder="Digite seu nome..." />
+                    <input value={userName} placeholder="Digite seu nome..." onChange={(event) => setUsername(event.target.value)}/>
                     <button type="submit">
                         <img src={paperPlaneIcon} alt="Paper plane"/>
                         Publicar

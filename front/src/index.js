@@ -8,3 +8,11 @@ ReactDOM.render(
   <App />,
   document.getElementById('root'),
 );
+
+fetch('http://localhost:3001/posts')
+  .then((response) => {
+    console.log(response);
+  })
+  .catch((error) =>{
+    console.log(error.message);
+  })

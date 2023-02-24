@@ -6,15 +6,19 @@ import userIcon from '../images/user.svg';
 import paperPlaneIcon from '../images/paper-plane.svg';
 import loader from '../images/loader-white.svg'
 
+import errors from '../config/errors';
+
 export default function PostForm(props) {
   const [history, setHistory] = useState('');
   const [userName, setUserName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMesage] = useState(null);
 
   function handleSubmit(event) {
     event.preventDefault();
 
     setIsLoading(true);
+    setErrorMesage(null);
 
     fetch('http://localhost:3001/posts', {
       method: "POST",
@@ -26,16 +30,36 @@ export default function PostForm(props) {
         'Content-Type': 'application/json',
       },
     })
-    .then(() => {
+    .then(async (response) => {
+      if(!response.ok) {
+        const body = await response.json();
+        
+        setErrorMesage(errors[body.code] || 'Ocorreu um erro ao cadastrar o post!'
+        );
+        
+        return;
+      }
+
       props.onSubmit({ history, userName });
-      setIsLoading(false);
       setHistory('');
       setUserName('');
     })
+    .catch(() => {
+      setErrorMesage('Ocorreu um erro ao cadastrar o post!');
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
 }
 
   return (
     <form className="post-form" onSubmit={handleSubmit}>
+      {errorMessage && (
+        <div className="error-container">
+          <strong>{errorMessage}</strong>
+        </div>
+      )}
+      
       <input
         value={history}
         placeholder="Escreva uma nova história..."

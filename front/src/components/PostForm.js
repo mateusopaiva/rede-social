@@ -14,42 +14,42 @@ export default function PostForm(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMesage] = useState(null);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(event) {
+    try {
+      event.preventDefault();
 
-    setIsLoading(true);
-    setErrorMesage(null);
-
-    fetch('http://localhost:3001/posts', {
-      method: "POST",
-      body:JSON.stringify({
-        content: history,
-        userName,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(async (response) => {
+      setIsLoading(true);
+      setErrorMesage(null);
+  
+      const response = await fetch('http://localhost:3001/posts', {
+        method: "POST",
+        body:JSON.stringify({
+          content: history,
+          userName,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
       if(!response.ok) {
         const body = await response.json();
         
         setErrorMesage(errors[body.code] || 'Ocorreu um erro ao cadastrar o post!'
         );
-        
         return;
       }
-
+  
       props.onSubmit({ history, userName });
+  
       setHistory('');
       setUserName('');
-    })
-    .catch(() => {
+
+    } catch {
       setErrorMesage('Ocorreu um erro ao cadastrar o post!');
-    })
-    .finally(() => {
+    } finally {
       setIsLoading(false);
-    });
+    }
 }
 
   return (

@@ -1,36 +1,33 @@
 import { useState, useEffect } from "react";
 
 import Feed from '../components/Feed';
+import { getMostViewedPostsList } from "../services/postsService";
 
 export default function MostViewed() {
-    const [posts, setPosts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [hasError, setHasError] = useState(false);
-  
-    useEffect(() => {
-      async function loadPosts() {
-        try {
-          const response = await fetch('http://localhost:3001/posts/most-viewed')
-        
-          if(!response.ok) {
-            setHasError(true);
-            return;
-          }
-    
-          const body = await response.json();
-          setPosts(body.map((post) => ({
-            ...post,
-            publishedAt: new Date(post.publishedAt),
-          })));
-        } catch {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const postsList = await getMostViewedPostsList();
+      
+        if(!getMostViewedPostsList) {
           setHasError(true);
-        } finally {
-          setIsLoading(false);
+          return;
         }
+
+        setPosts(postsList);
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
       }
-  
-      loadPosts();
-    }, []);
+    }
+
+    loadPosts();
+  }, []);
 
   return (
     <main className="most-viewed">

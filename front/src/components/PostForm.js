@@ -6,7 +6,7 @@ import userIcon from '../images/user.svg';
 import paperPlaneIcon from '../images/paper-plane.svg';
 import loader from '../images/loader-white.svg'
 
-import errors from '../config/errors';
+import { createPost } from "../services/postsService";
 
 export default function PostForm(props) {
   const [history, setHistory] = useState('');
@@ -21,30 +21,20 @@ export default function PostForm(props) {
       setIsLoading(true);
       setErrorMesage(null);
   
-      const response = await fetch('http://localhost:3001/posts', {
-        method: "POST",
-        body:JSON.stringify({
-          content: history,
-          userName,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await createPost({
+        history, userName,
       });
+
+      if(response === true) {
+        props.onSubmit({ history, userName });
   
-      if(!response.ok) {
-        const body = await response.json();
-        
-        setErrorMesage(errors[body.code] || 'Ocorreu um erro ao cadastrar o post!'
-        );
+        setHistory('');
+        setUserName('');
+
         return;
       }
-  
-      props.onSubmit({ history, userName });
-  
-      setHistory('');
-      setUserName('');
 
+      setErrorMesage(response);
     } catch {
       setErrorMesage('Ocorreu um erro ao cadastrar o post!');
     } finally {
